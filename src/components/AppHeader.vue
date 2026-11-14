@@ -9,7 +9,9 @@ defineEmits(['install'])
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
       <a class="flex items-center gap-2.5 font-display text-lg font-extrabold tracking-tight text-forest" href="#"
         aria-label="Running Tracking home">
-        <span class="grid h-9 w-9 place-items-center rounded-xl bg-forest text-lime"><AppIcon name="run" class="h-5 w-5" /></span>
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-forest text-lime">
+          <AppIcon name="run" class="h-5 w-5" />
+        </span>
         <span>Running Tracking<span class="text-lime-700">.</span></span>
       </a>
       <div class="flex items-center gap-3 sm:gap-6">

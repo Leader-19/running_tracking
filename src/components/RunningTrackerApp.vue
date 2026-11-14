@@ -7,12 +7,15 @@ import RouteMapCard from './RouteMapCard.vue'
 import RunHistory from './RunHistory.vue'
 import AppFooter from './AppFooter.vue'
 import AppIcon from './AppIcon.vue'
+import DistanceTools from './DistanceTools.vue'
+import LocationPermissionDialog from './LocationPermissionDialog.vue'
 
 const tracker = useGeoTracker()
 const KEY = 'runtracker:runs'
 const runs = ref(readRuns())
 const installPrompt = ref(null)
 const isInstalled = ref(window.matchMedia('(display-mode: standalone)').matches)
+const showLocationDialog = ref(false)
 
 function readRuns() {
   try {
@@ -28,6 +31,11 @@ watch(runs, (value) => localStorage.setItem(KEY, JSON.stringify(value)), { deep:
 function finishRun() {
   const run = tracker.stop()
   if (run) runs.value.unshift(run)
+}
+
+function confirmStartRun() {
+  showLocationDialog.value = false
+  tracker.start()
 }
 
 function removeRun(id) {
@@ -72,13 +80,16 @@ onBeforeUnmount(() => {
       </section>
 
       <section class="grid gap-4 lg:grid-cols-[.92fr_1.08fr] lg:gap-5" aria-label="Run tracker">
-        <RunCard :status="tracker.status.value" :distance="tracker.distance.value" :elapsed="tracker.elapsed.value" :accuracy="tracker.accuracy.value" :error="tracker.error.value" @start="tracker.start" @pause="tracker.pause" @resume="tracker.resume" @finish="finishRun" />
+        <RunCard :status="tracker.status.value" :distance="tracker.distance.value" :elapsed="tracker.elapsed.value" :accuracy="tracker.accuracy.value" :recovered="tracker.recovered.value" :error="tracker.error.value" @start="showLocationDialog = true" @pause="tracker.pause" @resume="tracker.resume" @finish="finishRun" />
         <RouteMapCard :points="tracker.points.value" :position="tracker.position.value" :accuracy="tracker.accuracy.value" />
       </section>
+
+      <DistanceTools :distance="tracker.distance.value" />
 
       <RunHistory :runs="runs" @remove="removeRun" />
       <div class="mt-5 flex flex-wrap items-center justify-center gap-2 text-center text-[10px] text-stone-400 sm:hidden"><span class="h-1.5 w-1.5 rounded-full bg-lime-600"></span>Routes stay private on this device</div>
       <AppFooter />
+      <LocationPermissionDialog v-if="showLocationDialog" @cancel="showLocationDialog = false" @confirm="confirmStartRun" />
     </main>
   </div>
 </template>

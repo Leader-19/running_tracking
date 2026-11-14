@@ -3,12 +3,13 @@ import { computed } from 'vue'
 import { fmtTime, fmtPace } from '../utils/geo'
 import AppIcon from './AppIcon.vue'
 
-const props = defineProps({ status: String, distance: Number, elapsed: Number, accuracy: Number, error: String })
+const props = defineProps({ status: String, distance: Number, elapsed: Number, accuracy: Number, recovered: Boolean, error: String })
 const emit = defineEmits(['start', 'pause', 'resume', 'finish'])
 const km = computed(() => (props.distance || 0) / 1000)
 const meters = computed(() => Math.round(props.distance || 0))
 const speed = computed(() => props.elapsed > 0 && km.value > 0 ? (km.value / (props.elapsed / 3600)).toFixed(1) : '0.0')
 const label = computed(() => {
+  if (props.status === 'paused' && props.recovered) return 'Run restored · paused'
   if (props.status === 'running' && props.accuracy == null) return 'Finding GPS signal'
   if (props.status === 'running' && props.accuracy > 50) return 'Weak GPS signal'
   return ({ idle: 'Ready when you are', running: 'You’re on the move', paused: 'Run paused' }[props.status] || 'Ready')

@@ -40,6 +40,10 @@ defineProps({ name: { type: String, required: true } })
     <template v-else-if="name === 'trash'">
       <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3" />
     </template>
+    <template v-else-if="name === 'ruler'">
+      <path d="M4 16 16 4l4 4L8 20l-4-4Z" />
+      <path d="m14 6 2 2m-5 1 2 2m-5 1 2 2m-5 1 2 2" />
+    </template>
     <template v-else-if="name === 'download'">
       <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" />
     </template>
