@@ -1,0 +1,84 @@
+<script setup>
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useGeoTracker } from '../composables/useGeoTracker'
+import AppHeader from './AppHeader.vue'
+import RunCard from './RunCard.vue'
+import RouteMapCard from './RouteMapCard.vue'
+import RunHistory from './RunHistory.vue'
+import AppFooter from './AppFooter.vue'
+import AppIcon from './AppIcon.vue'
+
+const tracker = useGeoTracker()
+const KEY = 'runtracker:runs'
+const runs = ref(readRuns())
+const installPrompt = ref(null)
+const isInstalled = ref(window.matchMedia('(display-mode: standalone)').matches)
+
+function readRuns() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || '[]')
+    return Array.isArray(saved) ? saved : []
+  } catch {
+    return []
+  }
+}
+
+watch(runs, (value) => localStorage.setItem(KEY, JSON.stringify(value)), { deep: true })
+
+function finishRun() {
+  const run = tracker.stop()
+  if (run) runs.value.unshift(run)
+}
+
+function removeRun(id) {
+  runs.value = runs.value.filter((run) => run.id !== id)
+}
+
+async function installApp() {
+  if (!installPrompt.value) return
+  await installPrompt.value.prompt()
+  await installPrompt.value.userChoice
+  installPrompt.value = null
+}
+
+function onInstallPrompt(event) {
+  event.preventDefault()
+  installPrompt.value = event
+}
+
+function onAppInstalled() {
+  isInstalled.value = true
+  installPrompt.value = null
+}
+
+onMounted(() => {
+  window.addEventListener('beforeinstallprompt', onInstallPrompt)
+  window.addEventListener('appinstalled', onAppInstalled)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeinstallprompt', onInstallPrompt)
+  window.removeEventListener('appinstalled', onAppInstalled)
+})
+</script>
+
+<template>
+  <div class="min-h-screen bg-canvas">
+    <AppHeader :installable="Boolean(installPrompt) && !isInstalled" @install="installApp" />
+    <main class="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
+      <section class="flex min-h-40 items-center justify-between gap-4 py-7 sm:min-h-48 sm:py-10">
+        <div><p class="mb-2 flex items-center gap-2 text-[9px] font-bold tracking-[.18em] text-stone-400 sm:text-[10px]"><span class="h-px w-5 bg-lime-600"></span>YOUR RUNNING COMPANION</p><h1 class="font-display text-3xl font-bold tracking-tight text-stone-800 sm:text-4xl">Every step counts<span class="text-lime-700">.</span></h1><p class="mt-2 text-xs text-stone-500 sm:text-sm">Find your pace. Enjoy the miles. We’ll keep track.</p></div>
+        <div class="hidden items-center gap-2 rounded-2xl border border-stone-200 bg-white/70 p-3 sm:flex"><span class="grid h-9 w-9 place-items-center rounded-xl bg-lime-50 text-amber-500"><AppIcon name="sun" class="h-5 w-5" /></span><span><strong class="block text-xs text-stone-600">Today is a good day</strong><small class="text-[10px] text-stone-400">to get out there</small></span></div>
+      </section>
+
+      <section class="grid gap-4 lg:grid-cols-[.92fr_1.08fr] lg:gap-5" aria-label="Run tracker">
+        <RunCard :status="tracker.status.value" :distance="tracker.distance.value" :elapsed="tracker.elapsed.value" :accuracy="tracker.accuracy.value" :error="tracker.error.value" @start="tracker.start" @pause="tracker.pause" @resume="tracker.resume" @finish="finishRun" />
+        <RouteMapCard :points="tracker.points.value" :position="tracker.position.value" :accuracy="tracker.accuracy.value" />
+      </section>
+
+      <RunHistory :runs="runs" @remove="removeRun" />
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2 text-center text-[10px] text-stone-400 sm:hidden"><span class="h-1.5 w-1.5 rounded-full bg-lime-600"></span>Routes stay private on this device</div>
+      <AppFooter />
+    </main>
+  </div>
+</template>
