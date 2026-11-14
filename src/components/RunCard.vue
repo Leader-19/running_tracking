@@ -17,7 +17,7 @@ const label = computed(() => {
 </script>
 
 <template>
-  <section class="relative flex min-h-[410px] flex-col overflow-hidden rounded-3xl bg-forest p-5 text-white shadow-xl shadow-forest/10 sm:p-7" aria-label="Live run tracker">
+  <section class="relative flex min-h-[410px] w-full min-w-0 flex-col overflow-hidden rounded-3xl bg-forest p-5 text-white shadow-xl shadow-forest/10 sm:p-7" aria-label="Live run tracker">
     <div class="pointer-events-none absolute -right-20 top-24 h-56 w-56 rounded-full border border-lime/10 shadow-[0_0_0_25px_rgba(196,241,106,.025),0_0_0_55px_rgba(196,241,106,.02)]"></div>
     <div class="relative z-10 flex items-center justify-between">
       <span class="flex items-center gap-2 text-xs text-green-100"><span class="h-2 w-2 rounded-full" :class="status === 'running' ? 'animate-pulse bg-lime' : 'bg-stone-400'"></span>{{ label }}</span>
@@ -27,17 +27,17 @@ const label = computed(() => {
     <div class="relative z-10 mt-8">
       <p class="mb-1 text-[10px] font-bold tracking-[.2em] text-green-100/70">DISTANCE</p>
       <div class="flex items-baseline whitespace-nowrap font-display tabular-nums tracking-[-.06em]">
-        <span class="text-[clamp(4.5rem,12vw,6.2rem)] font-bold leading-none">{{ Math.floor(meters / 1000) }}</span>
+        <span class="text-[clamp(3.5rem,16vw,6.2rem)] font-bold leading-none sm:text-[clamp(4.5rem,12vw,6.2rem)]">{{ Math.floor(meters / 1000) }}</span>
         <span class="text-4xl font-semibold text-lime sm:text-5xl">.{{ String(meters % 1000).padStart(3, '0') }}</span>
-        <span class="ml-2 text-base font-medium tracking-normal text-green-100">km</span>
+        <span class="ml-1 text-sm font-medium tracking-normal text-green-100 sm:ml-2 sm:text-base">km</span>
       </div>
       <p class="mt-3 flex flex-wrap items-center gap-2 text-xs text-green-50"><strong>{{ Math.floor(meters / 1000) }} km</strong><span class="text-green-200/50">/</span><strong>{{ meters % 1000 }} m</strong><span class="text-green-100/60">total distance</span></p>
     </div>
 
     <div class="relative z-10 mt-auto grid grid-cols-3 border-y border-white/10 py-4">
-      <div class="min-w-0 pr-2"><span class="block text-[9px] font-bold tracking-widest text-green-100/60">TIME</span><strong class="mt-1 block truncate font-display text-lg tabular-nums">{{ fmtTime(elapsed || 0) }}</strong></div>
-      <div class="min-w-0 border-l border-white/10 px-3"><span class="block text-[9px] font-bold tracking-widest text-green-100/60">PACE /KM</span><strong class="mt-1 block truncate font-display text-lg tabular-nums">{{ fmtPace(elapsed || 0, km) }}<small class="ml-1 text-[10px] font-normal text-green-100">/km</small></strong></div>
-      <div class="min-w-0 border-l border-white/10 pl-3"><span class="block text-[9px] font-bold tracking-widest text-green-100/60">SPEED</span><strong class="mt-1 block truncate font-display text-lg tabular-nums">{{ speed }}<small class="ml-1 text-[10px] font-normal text-green-100">km/h</small></strong></div>
+      <div class="min-w-0 pr-1 sm:pr-2"><span class="block text-[8px] font-bold tracking-wider text-green-100/70 sm:text-[9px] sm:tracking-widest">TIME</span><strong class="mt-1 block truncate font-display text-base tabular-nums sm:text-lg">{{ fmtTime(elapsed || 0) }}</strong></div>
+      <div class="min-w-0 border-l border-white/10 px-2 sm:px-3"><span class="block text-[8px] font-bold tracking-wider text-green-100/70 sm:text-[9px] sm:tracking-widest">PACE /KM</span><strong class="mt-1 block truncate font-display text-base tabular-nums sm:text-lg">{{ fmtPace(elapsed || 0, km) }}<small class="ml-0.5 text-[9px] font-normal text-green-100 sm:ml-1 sm:text-[10px]">/km</small></strong></div>
+      <div class="min-w-0 border-l border-white/10 pl-2 sm:pl-3"><span class="block text-[8px] font-bold tracking-wider text-green-100/70 sm:text-[9px] sm:tracking-widest">SPEED</span><strong class="mt-1 block truncate font-display text-base tabular-nums sm:text-lg">{{ speed }}<small class="ml-0.5 text-[9px] font-normal text-green-100 sm:ml-1 sm:text-[10px]">km/h</small></strong></div>
     </div>
 
     <div class="relative z-10 mt-4 flex gap-2">

@@ -96,15 +96,15 @@ onBeforeUnmount(() => { if (map) map.remove() })
 </script>
 
 <template>
-  <section class="min-w-0 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5" aria-label="Route map">
+  <section class="w-full min-w-0 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5" aria-label="Route map">
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div><p class="mb-1 text-[10px] font-bold tracking-[.18em] text-stone-400">YOUR ROUTE</p><h2 class="font-display text-lg font-bold tracking-tight text-stone-800">Every step, mapped.</h2></div>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full border border-stone-100 px-2.5 py-2 text-[9px] text-stone-600 sm:text-[10px]"><span class="h-2 w-2 rounded-full" :class="gps.cls"></span>{{ gps.text }}</span>
-        <button class="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-2 text-[10px] font-bold text-forest transition hover:bg-lime-50 disabled:cursor-wait disabled:opacity-70" type="button" :disabled="locating" @click="locateMe"><AppIcon name="locate" class="h-4 w-4 text-blue-500" />{{ locating ? 'Locating…' : 'Locate me' }}</button>
+      <div class="flex flex-wrap items-center justify-end gap-1.5">
+        <span class="inline-flex max-w-32 items-center gap-1.5 rounded-full border border-stone-100 px-2 py-2 text-[9px] text-stone-600 sm:max-w-none sm:px-2.5 sm:text-[10px]"><span class="h-2 w-2 shrink-0 rounded-full" :class="gps.cls"></span><span class="truncate">{{ gps.text }}</span></span>
+        <button class="inline-flex min-h-11 items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-2 text-[10px] font-bold text-forest transition hover:bg-lime-50 disabled:cursor-wait disabled:opacity-70 sm:gap-1.5" type="button" :disabled="locating" @click="locateMe"><AppIcon name="locate" class="h-4 w-4 shrink-0 text-blue-500" />{{ locating ? 'Locating…' : 'Locate me' }}</button>
       </div>
     </div>
-    <div class="relative isolate h-[270px] overflow-hidden rounded-2xl bg-stone-100 sm:h-[300px]">
+    <div class="relative isolate h-[240px] overflow-hidden rounded-2xl bg-stone-100 sm:h-[300px]">
       <div ref="mapEl" class="absolute inset-0 z-0" role="img" aria-label="Map showing your current location and running route"></div>
       <div v-if="!points.length && !locationAccuracy" class="pointer-events-none absolute left-1/2 top-1/2 z-[401] flex w-48 -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
         <span class="mb-2 grid h-10 w-10 place-items-center rounded-xl border border-white bg-white/90 text-lime-700 shadow"><AppIcon name="pin" class="h-5 w-5" /></span>

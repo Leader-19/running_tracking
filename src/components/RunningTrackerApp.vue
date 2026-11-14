@@ -71,15 +71,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-canvas">
+  <div class="min-h-screen w-full overflow-x-clip bg-canvas">
     <AppHeader :installable="Boolean(installPrompt) && !isInstalled" @install="installApp" />
-    <main class="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
-      <section class="flex min-h-40 items-center justify-between gap-4 py-7 sm:min-h-48 sm:py-10">
-        <div><p class="mb-2 flex items-center gap-2 text-[9px] font-bold tracking-[.18em] text-stone-400 sm:text-[10px]"><span class="h-px w-5 bg-lime-600"></span>YOUR RUNNING COMPANION</p><h1 class="font-display text-3xl font-bold tracking-tight text-stone-800 sm:text-4xl">Every step counts<span class="text-lime-700">.</span></h1><p class="mt-2 text-xs text-stone-500 sm:text-sm">Find your pace. Enjoy the miles. We’ll keep track.</p></div>
+    <main class="mx-auto w-full min-w-0 max-w-6xl px-3 pb-4 sm:px-6">
+      <section class="flex min-h-36 items-center justify-between gap-4 py-6 sm:min-h-48 sm:py-10">
+        <div class="min-w-0"><p class="mb-2 flex items-center gap-2 text-[9px] font-bold tracking-[.15em] text-stone-500 sm:text-[10px] sm:tracking-[.18em]"><span class="h-px w-5 shrink-0 bg-lime-600"></span>YOUR RUNNING COMPANION</p><h1 class="font-display text-[clamp(1.5rem,7vw,2.25rem)] font-bold leading-tight tracking-tight text-stone-800 sm:text-4xl">Every step counts<span class="text-lime-700">.</span></h1><p class="mt-2 text-xs text-stone-500 sm:text-sm">Find your pace. Enjoy the miles. We’ll keep track.</p></div>
         <div class="hidden items-center gap-2 rounded-2xl border border-stone-200 bg-white/70 p-3 sm:flex"><span class="grid h-9 w-9 place-items-center rounded-xl bg-lime-50 text-amber-500"><AppIcon name="sun" class="h-5 w-5" /></span><span><strong class="block text-xs text-stone-600">Today is a good day</strong><small class="text-[10px] text-stone-400">to get out there</small></span></div>
       </section>
 
-      <section class="grid gap-4 lg:grid-cols-[.92fr_1.08fr] lg:gap-5" aria-label="Run tracker">
+      <section class="grid w-full min-w-0 grid-cols-1 gap-4 lg:grid-cols-[.92fr_1.08fr] lg:gap-5" aria-label="Run tracker">
         <RunCard :status="tracker.status.value" :distance="tracker.distance.value" :elapsed="tracker.elapsed.value" :accuracy="tracker.accuracy.value" :recovered="tracker.recovered.value" :error="tracker.error.value" @start="showLocationDialog = true" @pause="tracker.pause" @resume="tracker.resume" @finish="finishRun" />
         <RouteMapCard :points="tracker.points.value" :position="tracker.position.value" :accuracy="tracker.accuracy.value" />
       </section>
