@@ -174,7 +174,7 @@ export function useGeoTracker() {
 
   // Returns the finished run (or null if too short to keep)
   function stop() {
-    const run = distance.value >= 20
+    const run = distance.value >= 1
       ? {
         id: Date.now(), date: Date.now(), dist: distance.value, time: elapsed.value,
         pts: points.value.map((p) => [p.lat, p.lon])
@@ -184,6 +184,15 @@ export function useGeoTracker() {
     clearInterval(ticker); ticker = null; unlockScreen()
     status.value = 'idle'
     try { localStorage.removeItem(SESSION_KEY) } catch { }
+    banked = 0
+    startedAt = 0
+    last = null
+    points.value = []
+    position.value = null
+    distance.value = 0
+    accuracy.value = null
+    recovered.value = false
+    now.value = Date.now()
     return run
   }
 

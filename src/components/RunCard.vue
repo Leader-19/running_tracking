@@ -15,6 +15,13 @@ const label = computed(() => {
   if (props.status === 'running' && props.accuracy > 50) return 'Weak GPS signal'
   return ({ idle: 'Ready when you are', running: 'You’re on the move', paused: 'Run paused' }[props.status] || 'Ready')
 })
+const statusMessage = computed(() => {
+  if (props.error) return props.error
+  if (props.status === 'idle') return 'Tap Start your run to begin counting distance, pace, and speed.'
+  if (props.status === 'running' && props.accuracy > 100) return 'GPS is too weak to measure distance reliably. Move to an open area or wait for a stronger signal.'
+  if (props.status === 'running' && props.accuracy > 50) return 'Weak GPS signal. Distance is counting, but may be less accurate.'
+  return ''
+})
 </script>
 
 <template>
@@ -46,6 +53,6 @@ const label = computed(() => {
       <template v-else-if="status === 'running'"><button class="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-white/10 text-sm font-bold transition hover:bg-white/15" type="button" @click="emit('pause')"><AppIcon name="pause" class="h-4 w-4" />Pause</button><button class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-bold transition hover:bg-white/10" type="button" @click="emit('finish')"><AppIcon name="finish" class="h-4 w-4" />Finish</button></template>
       <template v-else><button class="flex h-12 flex-1 items-center justify-between rounded-xl bg-lime px-4 text-sm font-bold text-forest transition hover:bg-lime-200" type="button" @click="emit('resume')"><span class="flex items-center gap-2"><AppIcon name="play" class="h-4 w-4" />Resume run</span><AppIcon name="arrow-right" class="h-4 w-4" /></button><button class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-bold transition hover:bg-white/10" type="button" @click="emit('finish')"><AppIcon name="finish" class="h-4 w-4" />Finish</button></template>
     </div>
-    <p class="relative z-10 mt-2 min-h-4 text-[10px] leading-4 text-orange-200" role="status">{{ status === 'running' && accuracy > 100 ? 'GPS accuracy is too low to measure distance reliably. Move to an open area or wait for a stronger signal.' : error }}</p>
+    <p class="relative z-10 mt-2 min-h-4 text-[10px] leading-4" :class="error || (status === 'running' && accuracy > 100) ? 'text-orange-200' : 'text-green-100/75'" role="status">{{ statusMessage }}</p>
   </section>
 </template>
