@@ -11,6 +11,7 @@ const speed = computed(() => props.elapsed > 0 && km.value > 0 ? (km.value / (pr
 const label = computed(() => {
   if (props.status === 'paused' && props.recovered) return 'Run restored · paused'
   if (props.status === 'running' && props.accuracy == null) return 'Finding GPS signal'
+  if (props.status === 'running' && props.accuracy > 100) return 'Waiting for accurate GPS'
   if (props.status === 'running' && props.accuracy > 50) return 'Weak GPS signal'
   return ({ idle: 'Ready when you are', running: 'You’re on the move', paused: 'Run paused' }[props.status] || 'Ready')
 })
@@ -45,6 +46,6 @@ const label = computed(() => {
       <template v-else-if="status === 'running'"><button class="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-white/10 text-sm font-bold transition hover:bg-white/15" type="button" @click="emit('pause')"><AppIcon name="pause" class="h-4 w-4" />Pause</button><button class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-bold transition hover:bg-white/10" type="button" @click="emit('finish')"><AppIcon name="finish" class="h-4 w-4" />Finish</button></template>
       <template v-else><button class="flex h-12 flex-1 items-center justify-between rounded-xl bg-lime px-4 text-sm font-bold text-forest transition hover:bg-lime-200" type="button" @click="emit('resume')"><span class="flex items-center gap-2"><AppIcon name="play" class="h-4 w-4" />Resume run</span><AppIcon name="arrow-right" class="h-4 w-4" /></button><button class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-bold transition hover:bg-white/10" type="button" @click="emit('finish')"><AppIcon name="finish" class="h-4 w-4" />Finish</button></template>
     </div>
-    <p class="relative z-10 mt-2 min-h-4 text-[10px] leading-4 text-orange-200" role="status">{{ error }}</p>
+    <p class="relative z-10 mt-2 min-h-4 text-[10px] leading-4 text-orange-200" role="status">{{ status === 'running' && accuracy > 100 ? 'GPS accuracy is too low to measure distance reliably. Move to an open area or wait for a stronger signal.' : error }}</p>
   </section>
 </template>

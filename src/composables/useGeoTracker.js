@@ -1,8 +1,8 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { haversine } from '../utils/geo'
 
-const MAX_ACCURACY = 50   // metres: ignore weaker fixes
-const MAX_SPEED = 12      // m/s: ignore impossible jumps
+const MAX_ACCURACY = 100  // metres: very weak fixes are shown on the map but not used for distance
+const MAX_SPEED = 15      // m/s: reject jumps faster than 54 km/h
 const SESSION_KEY = 'runtracker:active-run:v1'
 
 function readSavedSession() {
@@ -85,12 +85,13 @@ export function useGeoTracker() {
     accuracy.value = c.accuracy
     position.value = { lat: c.latitude, lon: c.longitude, accuracy: c.accuracy }
     if (c.accuracy > MAX_ACCURACY) { persistSession(); return }
-    const pt = { lat: c.latitude, lon: c.longitude, t: p.timestamp }
+    const pt = { lat: c.latitude, lon: c.longitude, t: p.timestamp, accuracy: c.accuracy }
     if (status.value !== 'running') { points.value = [...points.value]; return }
     if (last) {
       const d = haversine(last, pt), dt = (pt.t - last.t) / 1000
       if (dt <= 0) return
-      if (d < Math.max(3, c.accuracy * 0.4)) return   // standing-still jitter
+      const movementThreshold = Math.max(3, Math.min(8, ((last.accuracy || c.accuracy) + c.accuracy) * 0.06))
+      if (d < movementThreshold) return               // filter GPS drift without ignoring normal walking steps
       if (d / dt > MAX_SPEED) return                  // outlier
       distance.value += d
     }

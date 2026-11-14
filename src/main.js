@@ -13,6 +13,8 @@ if ('serviceWorker' in navigator && import.meta.env.DEV) {
 } else if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .catch((error) => console.error('Service worker registration failed:', error))
+      .catch((error) => {
+        if (error.name !== 'SecurityError') console.warn('Service worker registration unavailable:', error)
+      })
   })
 }
