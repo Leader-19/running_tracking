@@ -10,7 +10,7 @@ export function fmtTime(s) {
   s = Math.floor(s)
   const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), c = s % 60
   const p = (n) => String(n).padStart(2, '0')
-  return h ? `${h}:${p(m)}:${p(c)}` : `${p(m)}:${p(c)}`
+  return `${p(h)}:${p(m)}:${p(c)}`
 }
 
 export function fmtPace(sec, km) {
